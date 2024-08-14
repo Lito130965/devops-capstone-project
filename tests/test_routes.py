@@ -7,6 +7,7 @@ Test cases can be run with the following:
 """
 import os
 import logging
+import random
 from unittest import TestCase
 from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
@@ -141,4 +142,9 @@ class TestAccountService(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
 
-    
+    def test_list_all_accounts(self):
+        """It should send a list of all accounts"""
+        accounts = self._create_accounts(random.randrange(1,5))
+        resp = self.client.get(f'{BASE_URL}/')
+        self.assertEqual(len(resp.get_json()), len(accounts))
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
