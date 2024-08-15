@@ -144,7 +144,40 @@ class TestAccountService(TestCase):
 
     def test_list_all_accounts(self):
         """It should send a list of all accounts"""
-        accounts = self._create_accounts(random.randrange(1,5))
-        resp = self.client.get(f'{BASE_URL}/')
+        accounts = self._create_accounts(random.randint(1,5))
+        resp = self.client.get(BASE_URL)
         self.assertEqual(len(resp.get_json()), len(accounts))
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+
+    def test_update_account(self):
+        """It should Update an existing Account by id"""
+        test_account = AccountFactory()
+        resp = self.client.post(BASE_URL, json=test_account.serialize())
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        new_account = resp.get_json()
+        new_account["name"] = "Another_name"
+        resp = self.client.put(f"{BASE_URL}/{new_account['id']}", json=new_account)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_account = resp.get_json()
+        self.assertEqual(updated_account["name"], "Another_name")
+
+
+    def test_delete_account(self):
+        """It should Delete an existing account"""
+        test_account = AccountFactory()
+        resp = self.client.post(BASE_URL, json=test_account.serialize())
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        resp = self.client.get(BASE_URL)
+        self.assertEqual(len(resp.get_json()), 1)
+
+        acc_id = test_account.id
+        resp = self.client.delete(f"{BASE_URL}/{acc_id}")
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_method_not_allowed(self):
+        """It should not allow an illegal method call"""
+        resp = self.client.delete(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
