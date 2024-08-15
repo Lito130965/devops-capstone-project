@@ -13,6 +13,8 @@ from . import app  # Import Flask application
 ############################################################
 # Health Endpoint
 ############################################################
+
+
 @app.route("/health")
 def health():
     """Health Status"""
@@ -22,6 +24,8 @@ def health():
 ######################################################################
 # GET INDEX
 ######################################################################
+
+
 @app.route("/")
 def index():
     """Root URL response"""
@@ -38,6 +42,8 @@ def index():
 ######################################################################
 # CREATE A NEW ACCOUNT
 ######################################################################
+
+
 @app.route("/accounts", methods=["POST"])
 def create_accounts():
     """
@@ -57,9 +63,11 @@ def create_accounts():
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
+
 ######################################################################
 # LIST ALL ACCOUNTS
 ######################################################################
+
 
 @app.route('/accounts', methods=['GET'])
 def list_accounts():
@@ -73,6 +81,7 @@ def list_accounts():
 # READ AN ACCOUNT
 ######################################################################
 
+
 @app.route('/accounts/<int:id>', methods=['GET'])
 def read_account(id):
     """Read an account"""
@@ -83,10 +92,10 @@ def read_account(id):
     return account.serialize(), status.HTTP_200_OK
 
 
-
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
+
 
 @app.route("/accounts/<int:acc_id>", methods=["PUT"])
 def update_accounts(acc_id):
@@ -102,6 +111,7 @@ def update_accounts(acc_id):
 ######################################################################
 # DELETE AN ACCOUNT
 ######################################################################
+
 
 @app.route("/accounts/<int:acc_id>", methods=["DELETE"])
 def delete_account(acc_id):
